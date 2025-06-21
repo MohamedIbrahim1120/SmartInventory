@@ -41,6 +41,8 @@ namespace SmartInventory
            .AddDefaultTokenProviders();
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
+
 
             var app = builder.Build();
 
