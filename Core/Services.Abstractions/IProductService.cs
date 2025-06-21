@@ -14,5 +14,9 @@ namespace Services.Abstractions
         Task<ProductDto> AddAsync(ProductDto dto);
         Task<bool> UpdateAsync(int id, ProductDto dto);
         Task<bool> DeleteAsync(int id);
+        Task<IEnumerable<ProductDto>> SearchAsync(string? name, int? categoryId);
+
+        Task<(IEnumerable<ProductDto> data, int totalCount)> GetPagedAsync(int pageNumber, int pageSize);
+
     }
 }

@@ -1,76 +1,62 @@
-﻿using AutoMapper;
-using Domain.Entities;
-using Domain.Interfaces;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Services.Abstractions;
 using Shared.DTOs;
 
-[Route("api/[controller]")]
-[ApiController]
-public class CategoryController : ControllerBase
+namespace SmartInventory.Controllers
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IMapper _mapper;
-
-    public CategoryController(IUnitOfWork unitOfWork, IMapper mapper)
+    [Route("api/[controller]")]
+    [ApiController]
+    public class CategoryController : ControllerBase
     {
-        _unitOfWork = unitOfWork;
-        _mapper = mapper;
-    }
+        private readonly ICategoryService _categoryService;
 
-    [HttpGet]
-    public async Task<IActionResult> GetAll()
-    {
-        var categories = await _unitOfWork.Categories.GetAllAsync();
-        var categoryDtos = _mapper.Map<IEnumerable<CategoryDto>>(categories);
-        return Ok(categoryDtos);
-    }
+        public CategoryController(ICategoryService categoryService)
+        {
+            _categoryService = categoryService;
+        }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> Get(int id)
-    {
-        var category = await _unitOfWork.Categories.GetByIdAsync(id);
-        if (category == null)
-            return NotFound();
+        [HttpGet("GetAllCategories")]
+        public async Task<IActionResult> GetAllCategories()
+        {
+            var categories = await _categoryService.GetAllAsync();
+            return Ok(categories);
+        }
 
-        var dto = _mapper.Map<CategoryDto>(category);
-        return Ok(dto);
-    }
+        [HttpGet("GetCategory/{id}")]
+        public async Task<IActionResult> GetCategory(int id)
+        {
+            var category = await _categoryService.GetByIdAsync(id);
+            if (category == null)
+                return NotFound();
 
-    [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CategoryDto dto)
-    {
-        var category = _mapper.Map<Category>(dto);
-        await _unitOfWork.Categories.AddAsync(category);
-        await _unitOfWork.SaveChangesAsync();
+            return Ok(category);
+        }
 
-        var createdDto = _mapper.Map<CategoryDto>(category);
-        return CreatedAtAction(nameof(Get), new { id = category.Id }, createdDto);
-    }
+        [HttpPost("CreateCategory")]
+        public async Task<IActionResult> CreateCategory([FromBody] CategoryDto dto)
+        {
+            var created = await _categoryService.AddAsync(dto);
+            return CreatedAtAction(nameof(GetCategory), new { id = created.Id }, created);
+        }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, [FromBody] CategoryDto dto)
-    {
-        var existing = await _unitOfWork.Categories.GetByIdAsync(id);
-        if (existing == null)
-            return NotFound();
+        [HttpPut("UpdateCategory/{id}")]
+        public async Task<IActionResult> UpdateCategory(int id, [FromBody] CategoryDto dto)
+        {
+            var result = await _categoryService.UpdateAsync(id, dto);
+            if (!result)
+                return NotFound();
 
-        _mapper.Map(dto, existing);
-        _unitOfWork.Categories.Update(existing);
-        await _unitOfWork.SaveChangesAsync();
+            return NoContent();
+        }
 
-        return NoContent();
-    }
+        [HttpDelete("DeleteCategory/{id}")]
+        public async Task<IActionResult> DeleteCategory(int id)
+        {
+            var result = await _categoryService.DeleteAsync(id);
+            if (!result)
+                return NotFound();
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id)
-    {
-        var category = await _unitOfWork.Categories.GetByIdAsync(id);
-        if (category == null)
-            return NotFound();
-
-        _unitOfWork.Categories.Remove(category);
-        await _unitOfWork.SaveChangesAsync();
-
-        return NoContent();
+            return NoContent();
+        }
     }
 }

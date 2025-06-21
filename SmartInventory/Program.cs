@@ -29,6 +29,10 @@ namespace SmartInventory
 
 
             builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<ICategoryService, CategoryService>();
+            builder.Services.AddScoped<IReportService, ReportService>();
+
+
 
             builder.Services.AddAutoMapper(typeof(MappingProfile));
 

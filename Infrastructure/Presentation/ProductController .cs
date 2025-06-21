@@ -15,14 +15,14 @@ namespace SmartInventory.Controllers
             _productService = productService;
         }
 
-        [HttpGet]
+        [HttpGet("GetAllProduct")]
         public async Task<IActionResult> GetAll()
         {
             var products = await _productService.GetAllAsync();
             return Ok(products);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("GetProductById/{id}")]
         public async Task<IActionResult> Get(int id)
         {
             var product = await _productService.GetByIdAsync(id);
@@ -32,14 +32,14 @@ namespace SmartInventory.Controllers
             return Ok(product);
         }
 
-        [HttpPost]
+        [HttpPost("CreateProduct")]
         public async Task<IActionResult> Create([FromBody] ProductDto dto)
         {
             var created = await _productService.AddAsync(dto);
             return CreatedAtAction(nameof(Get), new { id = created.Id }, created);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("UpdateProduct/{id}")]
         public async Task<IActionResult> Update(int id, [FromBody] ProductDto dto)
         {
             var result = await _productService.UpdateAsync(id, dto);
@@ -49,7 +49,7 @@ namespace SmartInventory.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("DeleteProduct/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _productService.DeleteAsync(id);
@@ -58,5 +58,21 @@ namespace SmartInventory.Controllers
 
             return NoContent();
         }
+
+        [HttpGet("Search")]
+        public async Task<IActionResult> Search([FromQuery] string? name, [FromQuery] int? categoryId)
+        {
+            var result = await _productService.SearchAsync(name, categoryId);
+            return Ok(result);
+        }
+
+
+        [HttpGet("Paged")]
+        public async Task<IActionResult> GetPaged([FromQuery] int page = 1, [FromQuery] int size = 10)
+        {
+            var (data, totalCount) = await _productService.GetPagedAsync(page, size);
+            return Ok(new { totalCount, data });
+        }
+
     }
 }
