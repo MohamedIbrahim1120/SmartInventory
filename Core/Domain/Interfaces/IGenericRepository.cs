@@ -19,5 +19,8 @@ namespace Domain.Interfaces
         void Update(T entity);
         void Remove(T entity);
         void RemoveRange(IEnumerable<T> entities);
+
+        Task<IEnumerable<T>> FindAsyncWithInclude(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes);
+
     }
 }
