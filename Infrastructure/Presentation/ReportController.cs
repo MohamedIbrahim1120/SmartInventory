@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Services.Abstractions;
+using SmartInventory.Reports;
 
 namespace SmartInventory.Controllers
 {
@@ -8,10 +9,12 @@ namespace SmartInventory.Controllers
     public class ReportController : ControllerBase
     {
         private readonly IReportService _reportService;
+        private readonly IProductService _productService;
 
-        public ReportController(IReportService reportService)
+        public ReportController(IReportService reportService, IProductService productService)
         {
             _reportService = reportService;
+            _productService = productService;
         }
 
         [HttpGet("TotalProducts")]
@@ -42,7 +45,12 @@ namespace SmartInventory.Controllers
             return Ok(result);
         }
 
-
-
+        [HttpGet("ProductsPdf")]
+        public async Task<IActionResult> GetProductReportPdf()
+        {
+            var products = await _productService.GetAllAsync();
+            var pdfBytes = ProductReportPdfGenerator.Generate(products.ToList());
+            return File(pdfBytes, "application/pdf", "ProductReport.pdf");
+        }
     }
 }
