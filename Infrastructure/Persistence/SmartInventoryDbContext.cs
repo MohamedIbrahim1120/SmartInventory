@@ -20,5 +20,8 @@ namespace Persistence
         public DbSet<Product> Products { get; set; }
 
         public DbSet<Category> Categories { get; set; }
+
+        public DbSet<StockTransaction> StockTransactions { get; set; }
+
     }
 }

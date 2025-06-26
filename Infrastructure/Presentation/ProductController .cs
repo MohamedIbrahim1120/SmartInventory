@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Domain.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using Services.Abstractions;
 using Shared.DTOs;
 
@@ -9,10 +10,12 @@ namespace SmartInventory.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductService _productService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public ProductController(IProductService productService)
+        public ProductController(IProductService productService,IUnitOfWork unitOfWork)
         {
             _productService = productService;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpGet("GetAllProduct")]
@@ -73,6 +76,24 @@ namespace SmartInventory.Controllers
             var (data, totalCount) = await _productService.GetPagedAsync(page, size);
             return Ok(new { totalCount, data });
         }
+
+        [HttpGet("by-category/{categoryId}")]
+        public async Task<IActionResult> GetByCategory(int categoryId)
+        {
+            var products = await _unitOfWork.Products.FindAsync(p => p.CategoryId == categoryId);
+
+            var result = products.Select(p => new
+            {
+                p.Id,
+                p.Name,
+                p.Quantity,
+                p.Price,
+                p.CategoryId
+            });
+
+            return Ok(result);
+        }
+
 
     }
 }

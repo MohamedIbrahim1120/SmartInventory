@@ -3,10 +3,14 @@ using Domain.Entities;
 using Domain.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using Persistence;
 using Services;
 using Services.Abstractions;
 using Shared.Mappings;
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace SmartInventory
 {
@@ -43,7 +47,26 @@ namespace SmartInventory
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             QuestPDF.Settings.License = QuestPDF.Infrastructure.LicenseType.Community;
 
-
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+.AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)
+        )
+    };
+});
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -55,7 +78,6 @@ namespace SmartInventory
 
             app.UseHttpsRedirection();
             app.UseAuthentication();
-
             app.UseAuthorization();
 
 
@@ -65,3 +87,8 @@ namespace SmartInventory
         }
     }
 }
+
+
+
+//"email": "test@example.com",
+//  "password": "P@ssw0rd"
