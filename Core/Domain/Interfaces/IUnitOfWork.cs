@@ -11,6 +11,8 @@ namespace Domain.Interfaces
     {
         IProductRepository Products { get; }
         IGenericRepository<Category> Categories { get; }
+
+        IGenericRepository<StockTransaction> StockTransactions { get; }
         Task<int> SaveChangesAsync();
     }
 

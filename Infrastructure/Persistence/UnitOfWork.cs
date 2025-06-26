@@ -9,16 +9,17 @@ using System.Threading.Tasks;
 
 namespace Persistence
 {
-
     public class UnitOfWork : IUnitOfWork
     {
         private readonly SmartInventoryDbContext _context;
 
         private IProductRepository? _product;
         private IGenericRepository<Category>? _category;
+        private IGenericRepository<StockTransaction>? _stockTransaction;
 
         public IProductRepository Products => _product ??= new ProductRepository(_context);
         public IGenericRepository<Category> Categories => _category ??= new GenericRepository<Category>(_context);
+        public IGenericRepository<StockTransaction> StockTransactions => _stockTransaction ??= new GenericRepository<StockTransaction>(_context); // ✅ تم تفعيله
 
         public UnitOfWork(SmartInventoryDbContext context)
         {
@@ -35,5 +36,4 @@ namespace Persistence
             _context.Dispose();
         }
     }
-
 }
