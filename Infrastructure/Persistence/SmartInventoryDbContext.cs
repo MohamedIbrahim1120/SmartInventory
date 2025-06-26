@@ -23,5 +23,8 @@ namespace Persistence
 
         public DbSet<StockTransaction> StockTransactions { get; set; }
 
+        public DbSet<ChatMessage> ChatMessages { get; set; }
+
+
     }
 }

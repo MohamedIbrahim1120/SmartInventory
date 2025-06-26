@@ -36,6 +36,7 @@ namespace SmartInventory
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<IReportService, ReportService>();
 
+            builder.Services.AddSignalR();
 
 
             builder.Services.AddAutoMapper(typeof(MappingProfile));
@@ -82,6 +83,7 @@ namespace SmartInventory
 
 
             app.MapControllers();
+            app.MapHub<ChatHub>("/chatHub");
 
             app.Run();
         }
