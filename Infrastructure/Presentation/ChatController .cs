@@ -48,6 +48,13 @@ namespace Presentation.Controllers
             };
 
             _context.ChatMessages.Add(chatMessage);
+
+            _context.Notifications.Add(new Notification
+            {
+                Message = $"رسالة جديدة من {dto.Sender}: {dto.Message}",
+                Type = "Chat",
+                Timestamp = DateTime.UtcNow
+            });
             await _context.SaveChangesAsync();
 
             return Ok(new { message = "Message saved successfully", chatMessage.Id });

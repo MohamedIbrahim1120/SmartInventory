@@ -15,5 +15,7 @@ namespace Domain.Entities
         public DateTime TransactionDate { get; set; } = DateTime.UtcNow;
         public string Type { get; set; } = null!;
         public string? Note { get; set; }
+        public DateTime Timestamp { get; set; } = DateTime.UtcNow;
+
     }
 }

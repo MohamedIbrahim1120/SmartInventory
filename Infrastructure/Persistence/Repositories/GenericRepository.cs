@@ -19,6 +19,10 @@ namespace Persistence.Repositories
             _context = context;
             _dbSet = _context.Set<T>();
         }
+        public async Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await _context.Set<T>().AnyAsync(predicate);
+        }
 
         public async Task<T?> GetByIdAsync(int id)
         {

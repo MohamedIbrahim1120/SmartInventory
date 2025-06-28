@@ -35,6 +35,9 @@ namespace SmartInventory
             builder.Services.AddScoped<IProductService, ProductService>();
             builder.Services.AddScoped<ICategoryService, CategoryService>();
             builder.Services.AddScoped<IReportService, ReportService>();
+            builder.Services.AddScoped<IPermissionService, PermissionService>();
+            builder.Services.AddScoped<IInventorySuggestionService, InventorySuggestionService>();
+
 
             builder.Services.AddSignalR();
 
@@ -91,6 +94,7 @@ namespace SmartInventory
 }
 
 
-
-//"email": "test@example.com",
+//{
+//    "email": "test@example.com",
 //  "password": "P@ssw0rd"
+//}

@@ -13,6 +13,8 @@ namespace Domain.Interfaces
         IGenericRepository<Category> Categories { get; }
 
         IGenericRepository<StockTransaction> StockTransactions { get; }
+
+        IGenericRepository<Notification> Notifications { get; }
         Task<int> SaveChangesAsync();
     }
 

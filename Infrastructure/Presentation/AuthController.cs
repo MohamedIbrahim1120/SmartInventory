@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Persistence;
 using Shared.DTOs;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -17,14 +18,17 @@ namespace SmartInventory.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IConfiguration _configuration;
+        private readonly SmartInventoryDbContext _context;
 
         public AuthController(UserManager<ApplicationUser> userManager,
                               SignInManager<ApplicationUser> signInManager,
-                              IConfiguration configuration)
+                              IConfiguration configuration,
+                              SmartInventoryDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _configuration = configuration;
+            _context = context;
         }
 
         [HttpPost("register")]
@@ -48,16 +52,27 @@ namespace SmartInventory.Controllers
         public async Task<IActionResult> Login(LoginDto dto)
         {
             var user = await _userManager.FindByEmailAsync(dto.Email);
-            if (user == null)
-                return Unauthorized();
+            if (user == null) return Unauthorized();
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, dto.Password, false);
-            if (!result.Succeeded)
-                return Unauthorized();
+            if (!result.Succeeded) return Unauthorized();
+
+            var loginHistory = new UserLoginHistory
+            {
+                UserId = user.Id,
+                Email = user.Email!,
+                LoginTime = DateTime.UtcNow,
+                IPAddress = HttpContext.Connection.RemoteIpAddress?.ToString(),
+                UserAgent = Request.Headers["User-Agent"]
+            };
+
+            _context.UserLoginHistories.Add(loginHistory);
+            await _context.SaveChangesAsync();
 
             var token = GenerateJwtToken(user);
             return Ok(new { token });
         }
+
 
         private string GenerateJwtToken(ApplicationUser user)
         {
