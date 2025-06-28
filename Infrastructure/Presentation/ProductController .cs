@@ -1,4 +1,5 @@
-﻿using Domain.Interfaces;
+﻿using Domain.Entities;
+using Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Services.Abstractions;
 using Shared.DTOs;
@@ -94,6 +95,26 @@ namespace SmartInventory.Controllers
             return Ok(result);
         }
 
+        [HttpGet("WithSuppliers")]
+        public async Task<IActionResult> GetProductsWithSuppliers()
+        {
+            var products = await _unitOfWork.Products.GetAllAsync();
+
+            var result = products.Select(p => new ProductWithSupplierDto
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Quantity = p.Quantity,
+                CategoryId = p.CategoryId ?? 0,
+                CategoryName = p.Category?.Name ?? "WithOut Category",
+                SupplierId = p.SupplierId,
+                SupplierName = p.Supplier?.Name ?? "WithOut Suppliers"
+            }).ToList();
+
+            return Ok(result);
+        }
 
     }
+
 }
+

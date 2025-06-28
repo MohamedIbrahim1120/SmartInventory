@@ -9,7 +9,7 @@ namespace Domain.Interfaces
 {
     public interface IGenericRepository<T> where T : class
     {
-        Task<T?> GetByIdAsync(int id);
+        Task<T?> GetByIdAsync(object id);
         Task<IEnumerable<T>> GetAllAsync();
         Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate);
 
@@ -23,6 +23,7 @@ namespace Domain.Interfaces
         Task<IEnumerable<T>> FindAsyncWithInclude(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes);
 
         Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate);
+        void Delete(T entity);
 
     }
 }

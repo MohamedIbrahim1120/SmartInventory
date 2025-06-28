@@ -15,11 +15,16 @@ namespace Shared.Mappings
         public MappingProfile()
         {
             CreateMap<Product, ProductDto>()
-                    .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category != null ? src.Category.Name : null));
+               .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
+               .ForMember(dest => dest.SupplierName, opt => opt.MapFrom(src => src.Supplier.Name))
+               .ReverseMap();
 
             CreateMap<ProductDto, Product>();
 
             CreateMap<Category, CategoryDto>().ReverseMap();
+
+            CreateMap<Supplier, SupplierDto>().ReverseMap();
+
 
         }
     }
