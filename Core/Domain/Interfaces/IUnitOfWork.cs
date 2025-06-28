@@ -15,6 +15,9 @@ namespace Domain.Interfaces
         IGenericRepository<StockTransaction> StockTransactions { get; }
 
         IGenericRepository<Notification> Notifications { get; }
+
+        IGenericRepository<Supplier> Suppliers { get; }
+
         Task<int> SaveChangesAsync();
     }
 

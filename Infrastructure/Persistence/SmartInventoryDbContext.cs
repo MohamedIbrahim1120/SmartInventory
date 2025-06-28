@@ -33,6 +33,16 @@ namespace Persistence
                 .HasOne(up => up.Permission)
                 .WithMany(p => p.UserPermissions)
                 .HasForeignKey(up => up.PermissionId);
+
+            builder.Entity<Product>()
+                .HasOne(p => p.Supplier)
+                .WithMany(s => s.Products)
+                .HasForeignKey(p => p.SupplierId);
+
+            builder.Entity<Product>()
+                .Property(p => p.Price)
+                .HasColumnType("decimal(18,2)");
+
         }
         public DbSet<Product> Products { get; set; }
 
@@ -49,6 +59,7 @@ namespace Persistence
 
         public DbSet<UserLoginHistory> UserLoginHistories { get; set; }
 
+        public DbSet<Supplier> Suppliers { get; set; }
 
 
     }

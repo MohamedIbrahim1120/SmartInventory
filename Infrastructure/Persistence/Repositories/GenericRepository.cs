@@ -24,15 +24,17 @@ namespace Persistence.Repositories
             return await _context.Set<T>().AnyAsync(predicate);
         }
 
-        public async Task<T?> GetByIdAsync(int id)
+        public async Task<T?> GetByIdAsync(object id)
         {
-            return await _dbSet.FindAsync(id);
+            return await _context.Set<T>().FindAsync(id);
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+
+        public virtual async Task<IEnumerable<T>> GetAllAsync()
         {
             return await _dbSet.ToListAsync();
         }
+
 
         public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate)
         {
@@ -73,6 +75,10 @@ namespace Persistence.Repositories
             }
 
             return await query.Where(predicate).ToListAsync();
+        }
+        public void Delete(T entity)
+        {
+            _context.Set<T>().Remove(entity);
         }
 
     }

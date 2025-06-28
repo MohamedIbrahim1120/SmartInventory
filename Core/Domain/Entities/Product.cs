@@ -17,10 +17,13 @@ namespace Domain.Entities
         public int Quantity { get; set; }
 
         public decimal Price { get; set; }
+
         public int ReorderThreshold { get; set; } = 5;
 
         public int? CategoryId { get; set; }
+        public Category? Category { get; set; }
 
-        public Category? Category { get; set; } // Navigation property
+        public Guid SupplierId { get; set; }
+        public Supplier Supplier { get; set; } = null!;
     }
 }

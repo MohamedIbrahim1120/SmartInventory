@@ -15,5 +15,9 @@ namespace Shared.DTOs
         public int? CategoryId { get; set; }
 
         public string? CategoryName { get; set; }
+
+        public Guid? SupplierId { get; set; }
+        public string? SupplierName { get; set; }
+
     }
 }
