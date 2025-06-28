@@ -22,5 +22,7 @@ namespace Domain.Interfaces
 
         Task<IEnumerable<T>> FindAsyncWithInclude(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes);
 
+        Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate);
+
     }
 }

@@ -17,6 +17,7 @@ namespace Domain.Entities
         public int Quantity { get; set; }
 
         public decimal Price { get; set; }
+        public int ReorderThreshold { get; set; } = 5;
 
         public int? CategoryId { get; set; }
 

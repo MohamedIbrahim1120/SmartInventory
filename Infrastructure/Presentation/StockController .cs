@@ -41,8 +41,15 @@ public class StockController : ControllerBase
         await _unitOfWork.StockTransactions.AddAsync(transaction);
         _unitOfWork.Products.Update(product);
 
+        await _unitOfWork.Notifications.AddAsync(new Notification
+        {
+            Message = $"تم {dto.Type} عدد {dto.Quantity} من المنتج {product.Name}"
+        });
+
         await _unitOfWork.SaveChangesAsync();
 
         return Ok("Stock updated successfully ");
     }
+
+
 }

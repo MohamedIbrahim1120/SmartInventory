@@ -16,10 +16,13 @@ namespace Persistence
         private IProductRepository? _product;
         private IGenericRepository<Category>? _category;
         private IGenericRepository<StockTransaction>? _stockTransaction;
+        private IGenericRepository<Notification>? _notifications;
 
         public IProductRepository Products => _product ??= new ProductRepository(_context);
         public IGenericRepository<Category> Categories => _category ??= new GenericRepository<Category>(_context);
         public IGenericRepository<StockTransaction> StockTransactions => _stockTransaction ??= new GenericRepository<StockTransaction>(_context); // ✅ تم تفعيله
+
+        public IGenericRepository<Notification> Notifications => _notifications ??= new GenericRepository<Notification>(_context);
 
         public UnitOfWork(SmartInventoryDbContext context)
         {
